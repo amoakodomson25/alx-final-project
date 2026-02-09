@@ -26,7 +26,7 @@ export default function CardOne({
         {/* Poster Image */}
         <div className="relative h-96 overflow-hidden">
           <Image
-            src={posterUrl || "/placeholder-movie.jpg"}
+            src={posterUrl || "/placeholder-movie.png"}
             alt={title}
             fill={true}
             className="object-cover transition-transform duration-300 group-hover:scale-110"

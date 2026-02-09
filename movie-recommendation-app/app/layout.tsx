@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
-import { Open_Sans } from "next/font/google";
 import "./globals.css";
+import type { Metadata } from "next";
+import { Nunito } from "next/font/google";
 import Footer from "../components/layout/Footer";
 
-const open_sans = Open_Sans({
-  variable: "--font-open-sans",
+const nunito = Nunito({
   subsets: ["latin"],
+  variable: "--font-nunito",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -21,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${open_sans.variable} antialiased min-h-screen flex flex-col bg-gray-950`}
+        className={`${nunito.variable} font-sans antialiased min-h-screen flex flex-col bg-gray-950`}
       >
         <main className="flex-1">
           {children}

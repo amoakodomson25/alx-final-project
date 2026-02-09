@@ -14,7 +14,6 @@ export default function Home() {
               title="Inception"
               year="2010"
               rating={8.8}
-              posterUrl="/images/inception.jpg"
               description="A thief who steals corporate secrets..."
               genres={["Action", "Sci-Fi", "Thriller"]}
             />
@@ -23,7 +22,6 @@ export default function Home() {
               title="Inception"
               year="2010"
               rating={8.8}
-              posterUrl="/images/inception.jpg"
               description="A thief who steals corporate secrets..."
               genres={["Action", "Sci-Fi", "Thriller"]}
             />
@@ -32,7 +30,6 @@ export default function Home() {
               title="Inception"
               year="2010"
               rating={8.8}
-              posterUrl="/images/inception.jpg"
               description="A thief who steals corporate secrets..."
               genres={["Action", "Sci-Fi", "Thriller"]}
             />
@@ -41,7 +38,6 @@ export default function Home() {
               title="Inception"
               year="2010"
               rating={8.8}
-              posterUrl="/images/inception.jpg"
               description="A thief who steals corporate secrets..."
               genres={["Action", "Sci-Fi", "Thriller"]}
             />
@@ -56,7 +52,6 @@ export default function Home() {
               title="Inception"
               year="2010"
               rating={8.8}
-              posterUrl="/images/inception.jpg"
               description="A thief who steals corporate secrets..."
               genres={["Action", "Sci-Fi", "Thriller"]}
             />
@@ -65,7 +60,6 @@ export default function Home() {
               title="Inception"
               year="2010"
               rating={8.8}
-              posterUrl="/images/inception.jpg"
               description="A thief who steals corporate secrets..."
               genres={["Action", "Sci-Fi", "Thriller"]}
             />
@@ -74,7 +68,6 @@ export default function Home() {
               title="Inception"
               year="2010"
               rating={8.8}
-              posterUrl="/images/inception.jpg"
               description="A thief who steals corporate secrets..."
               genres={["Action", "Sci-Fi", "Thriller"]}
             />
@@ -83,7 +76,6 @@ export default function Home() {
               title="Inception"
               year="2010"
               rating={8.8}
-              posterUrl="/images/inception.jpg"
               description="A thief who steals corporate secrets..."
               genres={["Action", "Sci-Fi", "Thriller"]}
             />

@@ -25,7 +25,7 @@ export default function SmallCard({ id, title, year, posterUrl }: SmallCardProps
       <Link href={`/movie/${id}`} className="flex-shrink-0">
         <div className="relative w-16 h-24 rounded overflow-hidden">
           <Image
-            src={posterUrl || "/placeholder-movie.jpg"}
+            src={posterUrl || "/placeholder-movie.png"}
             alt={title}
             fill={true}
             className="object-cover"
