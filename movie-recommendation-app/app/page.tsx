@@ -4,7 +4,7 @@ import BigCard from "../components/ui/BigCard";
 export default function Home() {
   return (
     <div>
-      <div className="h-screen pt-20">
+      <div className="pt-20">
         {/* Trending Movies */}
         <section className="flex flex-col gap-8 items-center">
           <h1 className="text-4xl mb-10 font-bold">Trending Movies</h1>
@@ -89,7 +89,6 @@ export default function Home() {
             />
           </div>
         </section>
-
         {/* Favorite */}
         <section className="flex flex-col gap-8 items-center my-40">
           <h1 className="text-4xl mb-10 font-bold">Favorite Movies</h1>
@@ -97,6 +96,7 @@ export default function Home() {
             <SmallCard id="" posterUrl="" year="2025" title="AMOAKO" />
           </div>
         </section>
+
 
 
 
