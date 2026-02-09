@@ -1,13 +1,6 @@
-import "./globals.css";
 import type { Metadata } from "next";
-import { Nunito } from "next/font/google";
+import "./globals.css";
 import Footer from "../components/layout/Footer";
-
-const nunito = Nunito({
-  subsets: ["latin"],
-  variable: "--font-nunito",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "MovieFlix - Discover Your Next Favorite Movie",
@@ -21,8 +14,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body
-        className={`${nunito.variable} font-sans antialiased min-h-screen flex flex-col bg-gray-950`}
+        className={`font-sans antialiased min-h-screen flex flex-col bg-gray-950`}
       >
         <main className="flex-1">
           {children}
