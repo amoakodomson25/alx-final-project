@@ -1,7 +1,9 @@
-"sue client"
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { useState, useEffect } from "react";
 
 // Mock movie data - replace with actual API calls
 const mockMovies: Record<string, { id: string; title: string; year: string; rating: number; backdropUrl: string; posterUrl: string; description: string; genres: string[]; cast: { name: string; role: string; image: string }[] }> = {
@@ -42,12 +44,72 @@ interface MoviePageProps {
   params: Promise<{ id: string }>;
 }
 
-export default async function MoviePage({ params }: MoviePageProps) {
-  const { id } = await params;
-  const movie = mockMovies[id] || mockMovies["1"];
+interface MovieData {
+  id: string;
+  title: string;
+  year: string;
+  rating: number;
+  backdropUrl: string;
+  posterUrl: string;
+  description: string;
+  genres: string[];
+  cast: { name: string; role: string; image: string }[];
+}
 
-  if (!movie) {
-    notFound();
+export default function MoviePage({ params }: MoviePageProps) {
+  const [id, setId] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  useEffect(() => {
+    // Extract id from params
+    params.then((resolvedParams) => {
+      setId(resolvedParams.id);
+      setIsLoading(false);
+    });
+  }, [params]);
+
+  const movie = id ? (mockMovies[id] || mockMovies["1"]) : null;
+
+  useEffect(() => {
+    if (!movie) return;
+    // Check if this movie is in favorites
+    const storedFavorites = localStorage.getItem("favorites");
+    if (storedFavorites) {
+      try {
+        const favorites = JSON.parse(storedFavorites);
+        const isFav = favorites.some((m: MovieData) => m.id === movie.id);
+        setIsFavorite(isFav);
+      } catch (e) {
+        console.error("Failed to parse favorites:", e);
+      }
+    }
+  }, [movie]);
+
+  const toggleFavorite = () => {
+    if (!movie) return;
+    const storedFavorites = localStorage.getItem("favorites");
+    let favorites: MovieData[] = storedFavorites ? JSON.parse(storedFavorites) : [];
+
+    if (isFavorite) {
+      // Remove from favorites
+      favorites = favorites.filter((m) => m.id !== movie.id);
+    } else {
+      // Add to favorites
+      favorites.push(movie);
+    }
+
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+    setIsFavorite(!isFavorite);
+  };
+
+  // Show loading while params resolve
+  if (isLoading || !movie) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    );
   }
 
   return (
@@ -186,11 +248,27 @@ export default async function MoviePage({ params }: MoviePageProps) {
                 </svg>
                 Watch Trailer
               </button>
-              <button className="w-full bg-gray-800 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              <button
+                onClick={toggleFavorite}
+                className={`w-full ${
+                  isFavorite
+                    ? "bg-red-600 hover:bg-red-700"
+                    : "bg-gray-800 hover:bg-gray-700"
+                } text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2`}
+              >
+                <svg
+                  className={`w-5 h-5 ${isFavorite ? "fill-current" : "fill-none"}`}
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                  />
                 </svg>
-                Add to Favorites
+                {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
               </button>
               <button className="w-full bg-gray-800 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
