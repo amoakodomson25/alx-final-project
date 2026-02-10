@@ -163,13 +163,22 @@ export const discoverMovies = async (params: {
   sortBy?: string;
   page?: number;
 }): Promise<ReturnType<typeof transformMovie>[]> => {
-  const queryParams = new URLSearchParams({
-    api_key: TMDB_API_KEY,
-    ...(params.genreId && { with_genres: String(params.genreId) }),
-    ...(params.year && { primary_release_year: String(params.year) }),
-    ...(params.sortBy && { sort_by: params.sortBy }),
-    ...(params.page && { page: String(params.page) }),
-  });
+  const queryParams = new URLSearchParams();
+  if (TMDB_API_KEY) {
+    queryParams.set("api_key", TMDB_API_KEY);
+  }
+  if (params.genreId) {
+    queryParams.set("with_genres", String(params.genreId));
+  }
+  if (params.year) {
+    queryParams.set("primary_release_year", String(params.year));
+  }
+  if (params.sortBy) {
+    queryParams.set("sort_by", params.sortBy);
+  }
+  if (params.page) {
+    queryParams.set("page", String(params.page));
+  }
 
   const response = await fetch(`${TMDB_BASE_URL}/discover/movie?${queryParams}`);
   const data: TMDBResponse<TMDBMovie> = await response.json();
