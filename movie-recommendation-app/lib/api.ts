@@ -117,11 +117,11 @@ export const fetchNowPlayingMovies = async (page = 1): Promise<ReturnType<typeof
   return data.results.map(transformMovie);
 };
 
-export const fetchMovieById = async (id: string): Promise<{ id: string; title: string; year: string; rating: number; posterUrl: string; backdropUrl: string; description: string; genres: string[]; cast?: { name: string; role: string; image: string }[] }> => {
+export const fetchMovieById = async (id: string): Promise<{ id: string; title: string; year: string; rating: number; posterUrl: string; backdropUrl: string; description: string; genres: string[]; cast?: { name: string; role: string; image: string }[]; trailerUrl?: string }> => {
   const response = await fetch(`${TMDB_BASE_URL}/movie/${id}?api_key=${TMDB_API_KEY}&append_to_response=credits,videos`);
   const movie: TMDBMovieDetails = await response.json();
 
-  const transformedMovie: { id: string; title: string; year: string; rating: number; posterUrl: string; backdropUrl: string; description: string; genres: string[]; cast?: { name: string; role: string; image: string }[] } = {
+  const transformedMovie: { id: string; title: string; year: string; rating: number; posterUrl: string; backdropUrl: string; description: string; genres: string[]; cast?: { name: string; role: string; image: string }[]; trailerUrl?: string } = {
     id: String(movie.id),
     title: movie.title || movie.name || "Unknown Title",
     year: getYear(movie.release_date || movie.first_air_date),
@@ -131,6 +131,14 @@ export const fetchMovieById = async (id: string): Promise<{ id: string; title: s
     description: movie.overview || "No description available.",
     genres: movie.genres?.map((g) => g.name) || movie.genre_ids.map((id) => GENRE_MAP[id] || "Unknown"),
   };
+
+  // Extract trailer URL from videos
+  if (movie.videos?.results) {
+    const trailer = movie.videos.results.find((v) => v.type === "Trailer" && v.site === "YouTube");
+    if (trailer) {
+      transformedMovie.trailerUrl = `https://www.youtube.com/embed/${trailer.key}?autoplay=1`;
+    }
+  }
 
   if (movie.credits?.cast) {
     transformedMovie.cast = movie.credits.cast.slice(0, 5).map((member) => ({

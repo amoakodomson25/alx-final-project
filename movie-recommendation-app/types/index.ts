@@ -16,6 +16,7 @@ export interface MovieData {
   description: string;
   genres: string[];
   cast?: CastMember[];
+  trailerUrl?: string;
 }
 
 export interface FavoriteMovie {
