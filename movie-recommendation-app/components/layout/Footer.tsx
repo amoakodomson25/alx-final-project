@@ -46,46 +46,10 @@ const Footer = () => {
                   Home
                 </Link>
               </li>
-              <li>
-                <Link href="/popular" className="hover:text-white transition-colors">
-                  Popular
-                </Link>
-              </li>
-              <li>
-                <Link href="/top-rated" className="hover:text-white transition-colors">
-                  Top Rated
-                </Link>
-              </li>
+              
               <li>
                 <Link href="/favorites" className="hover:text-white transition-colors">
                   Favorites
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Support */}
-          <div>
-            <h3 className="text-white font-semibold mb-4">Support</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/about" className="hover:text-white transition-colors">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="hover:text-white transition-colors">
-                  Contact
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacy" className="hover:text-white transition-colors">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms" className="hover:text-white transition-colors">
-                  Terms of Service
                 </Link>
               </li>
             </ul>

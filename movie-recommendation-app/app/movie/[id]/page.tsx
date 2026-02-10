@@ -1,104 +1,27 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { useState, useEffect } from "react";
-import { MovieData } from "@/types";
+import { fetchMovieById } from "../../../lib/api";
 
-// Mock movie data - replace with actual API calls
-const mockMovies: Record<string, MovieData> = {
-  "1": {
-    id: "1",
-    title: "Inception",
-    year: "2010",
-    rating: 8.8,
-    backdropUrl: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1200",
-    posterUrl: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400",
-    description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.",
-    genres: ["Action", "Sci-Fi", "Thriller"],
-    cast: [
-      { name: "Leonardo DiCaprio", role: "Dominick Cobb", image: "https://i.pravatar.cc/150?img=1" },
-      { name: "Joseph Gordon-Levitt", role: "Arthur", image: "https://i.pravatar.cc/150?img=2" },
-      { name: "Ellen Page", role: "Ariadne", image: "https://i.pravatar.cc/150?img=3" },
-      { name: "Tom Hardy", role: "Eames", image: "https://i.pravatar.cc/150?img=4" },
-    ],
-  },
-  "2": {
-    id: "2",
-    title: "The Dark Knight",
-    year: "2008",
-    rating: 9.0,
-    backdropUrl: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1200",
-    posterUrl: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400",
-    description: "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
-    genres: ["Action", "Crime", "Drama"],
-    cast: [
-      { name: "Christian Bale", role: "Bruce Wayne", image: "https://i.pravatar.cc/150?img=5" },
-      { name: "Heath Ledger", role: "Joker", image: "https://i.pravatar.cc/150?img=6" },
-      { name: "Aaron Eckhart", role: "Harvey Dent", image: "https://i.pravatar.cc/150?img=7" },
-    ],
-  },
-};
-
+// Server Component
 interface MoviePageProps {
   params: Promise<{ id: string }>;
 }
 
-export default function MoviePage({ params }: MoviePageProps) {
-  const [id, setId] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [isFavorite, setIsFavorite] = useState(false);
+export default async function MoviePage({ params }: MoviePageProps) {
+  const { id } = await params;
 
-  useEffect(() => {
-    // Extract id from params
-    params.then((resolvedParams) => {
-      setId(resolvedParams.id);
-      setIsLoading(false);
-    });
-  }, [params]);
+  // Fetch movie data from TMDB
+  let movie;
+  try {
+    movie = await fetchMovieById(id);
+  } catch (error) {
+    console.error("Failed to fetch movie:", error);
+    return notFound();
+  }
 
-  const movie = id ? (mockMovies[id] || mockMovies["1"]) : null;
-
-  useEffect(() => {
-    if (!movie) return;
-    // Check if this movie is in favorites
-    const storedFavorites = localStorage.getItem("favorites");
-    if (storedFavorites) {
-      try {
-        const favorites = JSON.parse(storedFavorites);
-        const isFav = favorites.some((m: MovieData) => m.id === movie!.id);
-        setIsFavorite(isFav);
-      } catch (e) {
-        console.error("Failed to parse favorites:", e);
-      }
-    }
-  }, [movie]);
-
-  const toggleFavorite = () => {
-    if (!movie) return;
-    const storedFavorites = localStorage.getItem("favorites");
-    let favorites: MovieData[] = storedFavorites ? JSON.parse(storedFavorites) : [];
-
-    if (isFavorite) {
-      // Remove from favorites
-      favorites = favorites.filter((m) => m.id !== movie!.id);
-    } else {
-      // Add to favorites
-      favorites.push(movie);
-    }
-
-    localStorage.setItem("favorites", JSON.stringify(favorites));
-    setIsFavorite(!isFavorite);
-  };
-
-  // Show loading while params resolve
-  if (isLoading || !movie) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
-      </div>
-    );
+  if (!movie) {
+    return notFound();
   }
 
   return (
@@ -113,7 +36,7 @@ export default function MoviePage({ params }: MoviePageProps) {
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/60 to-transparent" />
-        
+
         {/* Back Button */}
         <Link
           href="/"
@@ -179,51 +102,29 @@ export default function MoviePage({ params }: MoviePageProps) {
             </section>
 
             {/* Cast */}
-            <section>
-              <h2 className="text-2xl font-bold text-white mb-6">Cast</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {movie.cast.map((actor) => (
-                  <div key={actor.name} className="flex items-center gap-3 p-3 bg-gray-900 rounded-lg">
-                    <div className="relative w-12 h-12 rounded-full overflow-hidden">
-                      <Image
-                        src={actor.image}
-                        alt={actor.name}
-                        fill={true}
-                        className="object-cover"
-                      />
+            {movie.cast && movie.cast.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-bold text-white mb-6">Cast</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {movie.cast.map((actor) => (
+                    <div key={actor.name} className="flex items-center gap-3 p-3 bg-gray-900 rounded-lg">
+                      <div className="relative w-12 h-12 rounded-full overflow-hidden">
+                        <Image
+                          src={actor.image}
+                          alt={actor.name}
+                          fill={true}
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-white font-medium text-sm truncate">{actor.name}</p>
+                        <p className="text-gray-400 text-xs truncate">{actor.role}</p>
+                      </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-white font-medium text-sm truncate">{actor.name}</p>
-                      <p className="text-gray-400 text-xs truncate">{actor.role}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* Similar Movies */}
-            <section>
-              <h2 className="text-2xl font-bold text-white mb-6">Similar Movies</h2>
-              <div className="flex gap-4 overflow-x-auto pb-4">
-                {Object.values(mockMovies).filter(m => m.id !== movie.id).map((simMovie) => (
-                  <Link key={simMovie.id} href={`/movie/${simMovie.id}`} className="flex-shrink-0 w-40">
-                    <div className="relative w-40 h-60 rounded-xl overflow-hidden group">
-                      <Image
-                        src={simMovie.posterUrl}
-                        alt={simMovie.title}
-                        fill={true}
-                        className="object-cover transition-transform duration-300 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </div>
-                    <p className="text-white text-sm mt-2 truncate group-hover:text-red-400 transition-colors">
-                      {simMovie.title}
-                    </p>
-                    <p className="text-gray-400 text-xs">{simMovie.year}</p>
-                  </Link>
-                ))}
-              </div>
-            </section>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
 
           {/* Sidebar */}
@@ -237,19 +138,8 @@ export default function MoviePage({ params }: MoviePageProps) {
                 </svg>
                 Watch Trailer
               </button>
-              <button
-                onClick={toggleFavorite}
-                className={`w-full ${
-                  isFavorite
-                    ? "bg-red-600 hover:bg-red-700"
-                    : "bg-gray-800 hover:bg-gray-700"
-                } text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2`}
-              >
-                <svg
-                  className={`w-5 h-5 ${isFavorite ? "fill-current" : "fill-none"}`}
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+              <button className="w-full bg-gray-800 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+                <svg className="w-5 h-5 fill-none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -257,7 +147,7 @@ export default function MoviePage({ params }: MoviePageProps) {
                     d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                   />
                 </svg>
-                {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+                Add to Favorites
               </button>
               <button className="w-full bg-gray-800 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -265,29 +155,6 @@ export default function MoviePage({ params }: MoviePageProps) {
                 </svg>
                 Share
               </button>
-            </div>
-
-            {/* Movie Info */}
-            <div className="bg-gray-900 rounded-xl p-6 space-y-4">
-              <h3 className="text-white font-semibold text-lg">Movie Info</h3>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-gray-400 text-sm">Status</p>
-                  <p className="text-white">Released</p>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-sm">Original Language</p>
-                  <p className="text-white">English</p>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-sm">Budget</p>
-                  <p className="text-white">$160,000,000</p>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-sm">Revenue</p>
-                  <p className="text-white">$836,836,967</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>

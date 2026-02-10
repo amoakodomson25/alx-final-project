@@ -15,7 +15,7 @@ export interface MovieData {
   posterUrl: string;
   description: string;
   genres: string[];
-  cast: CastMember[];
+  cast?: CastMember[];
 }
 
 export interface FavoriteMovie {

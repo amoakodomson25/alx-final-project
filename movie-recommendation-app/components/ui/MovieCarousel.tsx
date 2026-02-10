@@ -9,7 +9,8 @@ interface Movie {
   year: string;
   rating?: number;
   posterUrl: string;
-  genre?: string;
+  genres?: string[];
+  genre?: string; // For backward compatibility
 }
 
 interface MovieCarouselProps {
@@ -67,7 +68,7 @@ export default function MovieCarousel({ title, movies }: MovieCarouselProps) {
               year={movie.year}
               rating={movie.rating}
               posterUrl={movie.posterUrl}
-              genre={movie.genre}
+              genre={movie.genre || movie.genres?.[0] || "Movie"}
             />
           </div>
         ))}
