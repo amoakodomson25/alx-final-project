@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { FavoriteMovie } from "@/types";
 
-export default function SmallCard({ id, title, year, rating, posterUrl, genre }: FavoriteMovie) {
+export default function Card({ id, title, year, rating, posterUrl, genre }: FavoriteMovie) {
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {

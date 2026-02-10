@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import SmallCard from "./SmallCard";
+import Card from "./Card";
 
 interface Movie {
   id: string;
@@ -62,7 +62,7 @@ export default function MovieCarousel({ title, movies }: MovieCarouselProps) {
       >
         {movies.map((movie) => (
           <div key={movie.id} className="flex-shrink-0">
-            <SmallCard
+            <Card
               id={movie.id}
               title={movie.title}
               year={movie.year}

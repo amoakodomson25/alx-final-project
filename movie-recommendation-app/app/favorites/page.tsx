@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import SmallCard from "../../components/ui/SmallCard";
+import Card from "../../components/ui/Card";
 import { FavoriteMovie } from "@/types";
 
 export default function FavoritesPage() {
@@ -73,7 +73,7 @@ export default function FavoritesPage() {
         <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
           {favorites.map((movie) => (
             <div key={movie.id} className="relative group">
-              <SmallCard
+              <Card
                 id={movie.id}
                 title={movie.title}
                 year={movie.year}
