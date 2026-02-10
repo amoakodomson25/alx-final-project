@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface SmallCardProps {
   id: string;
@@ -15,6 +15,41 @@ interface SmallCardProps {
 
 export default function SmallCard({ id, title, year, rating, posterUrl, genre }: SmallCardProps) {
   const [isFavorite, setIsFavorite] = useState(false);
+
+  useEffect(() => {
+    // Check if this movie is in favorites
+    const storedFavorites = localStorage.getItem("favorites");
+    if (storedFavorites) {
+      try {
+        const favorites = JSON.parse(storedFavorites);
+        const isFav = favorites.some((movie: SmallCardProps) => movie.id === id);
+        const timer = setTimeout(() => {
+          setIsFavorite(isFav);
+        }, 50);
+        return () => clearTimeout(timer);
+      } catch (e) {
+        console.error("Failed to parse favorites:", e);
+      }
+    }
+  }, [id]);
+
+  const toggleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    const storedFavorites = localStorage.getItem("favorites");
+    let favorites: SmallCardProps[] = storedFavorites ? JSON.parse(storedFavorites) : [];
+
+    if (isFavorite) {
+      // Remove from favorites
+      favorites = favorites.filter((movie) => movie.id !== id);
+    } else {
+      // Add to favorites
+      favorites.push({ id, title, year, rating, posterUrl, genre });
+    }
+
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+    setIsFavorite(!isFavorite);
+  };
 
   return (
     <Link href={`/movie/${id}`}>
@@ -34,10 +69,7 @@ export default function SmallCard({ id, title, year, rating, posterUrl, genre }:
           
           {/* Favorite Button */}
           <button
-            onClick={(e) => {
-              e.preventDefault();
-              setIsFavorite(!isFavorite);
-            }}
+            onClick={toggleFavorite}
             className={`absolute top-2 right-2 p-2 rounded-full transition-all duration-300 ${
               isFavorite
                 ? "text-red-500 bg-red-500/20 backdrop-blur-sm scale-110"
