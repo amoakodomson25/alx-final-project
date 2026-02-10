@@ -1,15 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-
-interface MovieCardProps {
-  id: string;
-  title: string;
-  year: string;
-  rating: number;
-  posterUrl: string;
-  description: string;
-  genres: string[];
-}
+import { MovieCardProps } from "@/types";
 
 export default function CardOne({
   id,

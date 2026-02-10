@@ -4,9 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { useState, useEffect } from "react";
+import { MovieData } from "@/types";
 
 // Mock movie data - replace with actual API calls
-const mockMovies: Record<string, { id: string; title: string; year: string; rating: number; backdropUrl: string; posterUrl: string; description: string; genres: string[]; cast: { name: string; role: string; image: string }[] }> = {
+const mockMovies: Record<string, MovieData> = {
   "1": {
     id: "1",
     title: "Inception",
@@ -44,18 +45,6 @@ interface MoviePageProps {
   params: Promise<{ id: string }>;
 }
 
-interface MovieData {
-  id: string;
-  title: string;
-  year: string;
-  rating: number;
-  backdropUrl: string;
-  posterUrl: string;
-  description: string;
-  genres: string[];
-  cast: { name: string; role: string; image: string }[];
-}
-
 export default function MoviePage({ params }: MoviePageProps) {
   const [id, setId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
@@ -78,7 +67,7 @@ export default function MoviePage({ params }: MoviePageProps) {
     if (storedFavorites) {
       try {
         const favorites = JSON.parse(storedFavorites);
-        const isFav = favorites.some((m: MovieData) => m.id === movie.id);
+        const isFav = favorites.some((m: MovieData) => m.id === movie!.id);
         setIsFavorite(isFav);
       } catch (e) {
         console.error("Failed to parse favorites:", e);
@@ -93,7 +82,7 @@ export default function MoviePage({ params }: MoviePageProps) {
 
     if (isFavorite) {
       // Remove from favorites
-      favorites = favorites.filter((m) => m.id !== movie.id);
+      favorites = favorites.filter((m) => m.id !== movie!.id);
     } else {
       // Add to favorites
       favorites.push(movie);

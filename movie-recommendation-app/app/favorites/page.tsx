@@ -3,15 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import SmallCard from "../../components/ui/SmallCard";
-
-interface FavoriteMovie {
-  id: string;
-  title: string;
-  year: string;
-  rating?: number;
-  posterUrl: string;
-  genre?: string;
-}
+import { FavoriteMovie } from "@/types";
 
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<FavoriteMovie[]>([]);

@@ -3,17 +3,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { FavoriteMovie } from "@/types";
 
-interface SmallCardProps {
-  id: string;
-  title: string;
-  year: string;
-  rating?: number;
-  posterUrl: string;
-  genre?: string;
-}
-
-export default function SmallCard({ id, title, year, rating, posterUrl, genre }: SmallCardProps) {
+export default function SmallCard({ id, title, year, rating, posterUrl, genre }: FavoriteMovie) {
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
@@ -22,7 +14,7 @@ export default function SmallCard({ id, title, year, rating, posterUrl, genre }:
     if (storedFavorites) {
       try {
         const favorites = JSON.parse(storedFavorites);
-        const isFav = favorites.some((movie: SmallCardProps) => movie.id === id);
+        const isFav = favorites.some((movie: FavoriteMovie) => movie.id === id);
         const timer = setTimeout(() => {
           setIsFavorite(isFav);
         }, 50);
@@ -37,7 +29,7 @@ export default function SmallCard({ id, title, year, rating, posterUrl, genre }:
     e.preventDefault();
     
     const storedFavorites = localStorage.getItem("favorites");
-    let favorites: SmallCardProps[] = storedFavorites ? JSON.parse(storedFavorites) : [];
+    let favorites: FavoriteMovie[] = storedFavorites ? JSON.parse(storedFavorites) : [];
 
     if (isFavorite) {
       // Remove from favorites
